@@ -42,12 +42,29 @@ const Text = styled(Typography) `
     font-size: 15px;
 `
 
+const signupInitialValues = {
+    name:'',
+    username:'',
+    email:'',
+    password:''
+};
+
+
+
+
+
 const Login = () => {
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
 
     const [account,setAccount] = useState('login');
+    const [signup,setSignup] = useState(signupInitialValues);
     const toggleSignup = () => {
         account === 'login' ? setAccount('signup') : setAccount('login');
+    }
+    const onInputChange = (e) => {
+        // setSignup(e.target.name,e.target.value);
+        // we dont want to override values of fields, rather we need to append so instead of line 65 use 67
+        setSignup({...signup,[e.target.name]:e.target.value});
     }
 
     return (
@@ -65,10 +82,22 @@ const Login = () => {
                     </Wrapper>
                     : 
                     <Wrapper>
-                        <TextField variant="standard" label="Enter name"/>
-                        <TextField variant="standard" label="Enter username"/>
-                        <TextField variant="standard" label="Enter email"/>
-                        <TextField variant="standard" label="Enter password"/>
+                        <TextField variant="standard" 
+                        onChange={(e) => onInputChange(e)}
+                        label="Enter name"
+                        name='name'/>
+                        <TextField variant="standard" 
+                        onChange={(e) => onInputChange(e)}
+                        label="Enter username"
+                        name='username'/>
+                        <TextField variant="standard"
+                        onChange={(e) => onInputChange(e)}
+                        label="Enter email"
+                        name='email'/>
+                        <TextField variant="standard" 
+                        onChange={(e) => onInputChange(e)}
+                        label="Enter password"
+                        name='password'/>
                         {/* <p></p> or use Typography of material UI*/}
                         <SignupButton>Sign Up</SignupButton>
                         <Text style={{textAlign: 'center'}}>OR</Text>
