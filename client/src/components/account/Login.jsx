@@ -1,6 +1,11 @@
 import {Box,TextField,Button,styled,Typography} from '@mui/material'
-import { useState } from 'react';
+import { useState, useContext} from 'react';
 import { API } from '../../services/api.js';
+import { DataContext } from '../../contextAPI/DataProvider.jsx';
+import { useNavigate } from 'react-router-dom';
+
+
+
 // handling css 
 const Component = styled(Box)`
     width: 400px;
@@ -67,12 +72,16 @@ const loginInitialValues = {
 const Login = () => {
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
 
-    const [account,setAccount] = useState('login');
+    const [account,toggleAccount] = useState('login');
     const [signup,setSignup] = useState(signupInitialValues);
     const [error,setError] = useState('');
     const [login,setLogin] = useState(loginInitialValues);
+    const {setAccount} = useContext(DataContext);
+    
+    const navigate = useNavigate();
+
     const toggleSignup = () => {
-        account === 'login' ? setAccount('signup') : setAccount('login');
+        account === 'login' ? toggleAccount('signup') : toggleAccount('login');
     }
     const onInputChange = (e) => {
         // setSignup(e.target.name,e.target.value);
@@ -101,6 +110,9 @@ const Login = () => {
             sessionStorage.setItem('accessToken',`Bearer ${response.data.accessToken}`);
             sessionStorage.setItem('refreshToken',`Bearer ${response.data.refreshToken}`);
             // I need to use name,email(received from the api) that can be used in other components: so use context api 
+            setAccount({username:response.data.username,name: response.data.name,email:response.data.email});
+            
+            navigate('/');
 
         } else {
             setError('Something went wrong !!!');
