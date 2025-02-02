@@ -43,20 +43,23 @@ const Text = styled(Typography) `
     font-size: 15px;
 `
 
+const Error = styled(Typography) `
+font-size:10px;
+color:#ff6161;
+line-height:0;
+margin-top:10px;
+font-weight: 600;
+`
 const signupInitialValues = {
     name:'',
     username:'',
     email:'',
     password:''
 };
-const Error = styled(Typography) `
-    font-size:10px;
-    color:#ff6161;
-    line-height:0;
-    margin-top:10px;
-    font-weight: 600;
-`
-
+const loginInitialValues = {
+    usernameOrEmail: '',
+    password: ''
+}
 
 
 
@@ -67,6 +70,7 @@ const Login = () => {
     const [account,setAccount] = useState('login');
     const [signup,setSignup] = useState(signupInitialValues);
     const [error,setError] = useState('');
+    const [login,setLogin] = useState(loginInitialValues);
     const toggleSignup = () => {
         account === 'login' ? setAccount('signup') : setAccount('login');
     }
@@ -74,9 +78,7 @@ const Login = () => {
         // setSignup(e.target.name,e.target.value);
         // we dont want to override values of fields, rather we need to append so instead of line 65 use 67
         setSignup({...signup,[e.target.name]:e.target.value});
-
     }
-
     const signupUser = async () => {
         const response = await API.userSignup(signup)
         console.log(response);
@@ -86,9 +88,23 @@ const Login = () => {
             toggleSignup('login');
         } else {
             setError('Something went wrong !!!');
-
         }
+    };
+    
+    const onValueChange = (e) => {
+        setLogin({...login,[e.target.name]:e.target.value});
+    };
+    const loginUser = async () => {
+        const response = await API.userLogin(login);
+        if(response.isSuccess) {
+            setError('');
+            sessionStorage.setItem('accessToken',`Bearer ${response.data.accessToken}`);
+            sessionStorage.setItem('refreshToken',`Bearer ${response.data.refreshToken}`);
+            // I need to use name,email(received from the api) that can be used in other components: so use context api 
 
+        } else {
+            setError('Something went wrong !!!');
+        }
     }
 
     return (
@@ -98,10 +114,11 @@ const Login = () => {
                 {
                     account === 'login' ?
                     <Wrapper>
-                        <TextField variant="standard" label="Enter username or email"/>
-                        <TextField variant="standard" label="Enter password"/>
+                        <TextField variant="standard" value={login.username} onChange={(e)=>onValueChange(e)} name='usernameOrEmail' label="Enter username or email"/>
+                        <TextField variant="standard" value={login.password} onChange={(e)=>onValueChange(e)} name='password' label="Enter password"/>
+
                         {error && <Error>{error}</Error>}
-                        <LoginButton variant='contained'>Login</LoginButton>
+                        <LoginButton variant='contained' onClick={() => loginUser()}>Login</LoginButton>
                         <Text style={{textAlign: 'center'}}>OR</Text>
                         <SignupButton onClick={toggleSignup}>Create an account</SignupButton>
                     </Wrapper>
