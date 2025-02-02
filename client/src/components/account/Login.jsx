@@ -1,5 +1,6 @@
-import {Box,TextField,Button,styled,Typography, useScrollTrigger} from '@mui/material'
+import {Box,TextField,Button,styled,Typography} from '@mui/material'
 import { useState } from 'react';
+import { API } from '../../services/api.js';
 // handling css 
 const Component = styled(Box)`
     width: 400px;
@@ -48,6 +49,13 @@ const signupInitialValues = {
     email:'',
     password:''
 };
+const Error = styled(Typography) `
+    font-size:10px;
+    color:#ff6161;
+    line-height:0;
+    margin-top:10px;
+    font-weight: 600;
+`
 
 
 
@@ -58,6 +66,7 @@ const Login = () => {
 
     const [account,setAccount] = useState('login');
     const [signup,setSignup] = useState(signupInitialValues);
+    const [error,setError] = useState('');
     const toggleSignup = () => {
         account === 'login' ? setAccount('signup') : setAccount('login');
     }
@@ -65,6 +74,21 @@ const Login = () => {
         // setSignup(e.target.name,e.target.value);
         // we dont want to override values of fields, rather we need to append so instead of line 65 use 67
         setSignup({...signup,[e.target.name]:e.target.value});
+
+    }
+
+    const signupUser = async () => {
+        const response = await API.userSignup(signup)
+        console.log(response);
+        if(response.isSuccess) {
+            setError('');
+            setSignup(signupInitialValues);
+            toggleSignup('login');
+        } else {
+            setError('Something went wrong !!!');
+
+        }
+
     }
 
     return (
@@ -76,6 +100,7 @@ const Login = () => {
                     <Wrapper>
                         <TextField variant="standard" label="Enter username or email"/>
                         <TextField variant="standard" label="Enter password"/>
+                        {error && <Error>{error}</Error>}
                         <LoginButton variant='contained'>Login</LoginButton>
                         <Text style={{textAlign: 'center'}}>OR</Text>
                         <SignupButton onClick={toggleSignup}>Create an account</SignupButton>
@@ -99,7 +124,9 @@ const Login = () => {
                         label="Enter password"
                         name='password'/>
                         {/* <p></p> or use Typography of material UI*/}
-                        <SignupButton>Sign Up</SignupButton>
+
+                        {error && <Error>{error}</Error>}
+                        <SignupButton onClick={() => signupUser()}>Sign Up</SignupButton>
                         <Text style={{textAlign: 'center'}}>OR</Text>
                         <LoginButton variant='contained' onClick={() => toggleSignup()}>Already have an account</LoginButton>
                     </Wrapper>
