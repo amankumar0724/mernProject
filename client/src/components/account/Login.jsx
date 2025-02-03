@@ -89,7 +89,7 @@ const Login = ({setIsUserAuthenticated}) => {
         setSignup({...signup,[e.target.name]:e.target.value});
     }
     const signupUser = async () => {
-        const response = await API.userSignup(signup)
+        const response = await API.userSignup(signup);
         console.log(response);
         if(response.isSuccess) {
             setError('');
@@ -127,7 +127,7 @@ const Login = ({setIsUserAuthenticated}) => {
                 {
                     account === 'login' ?
                     <Wrapper>
-                        <TextField variant="standard" value={login.username} onChange={(e)=>onValueChange(e)} name='usernameOrEmail' label="Enter username or email"/>
+                        <TextField variant="standard" value={login.usernameOrEmail || ''} onChange={(e)=>onValueChange(e)} name='usernameOrEmail' label="Enter username or email"/>
                         <TextField variant="standard" value={login.password} onChange={(e)=>onValueChange(e)} name='password' label="Enter password"/>
 
                         {error && <Error>{error}</Error>}
@@ -138,25 +138,29 @@ const Login = ({setIsUserAuthenticated}) => {
                     : 
                     <Wrapper>
                         <TextField variant="standard" 
+                        value={signup.name || ''}
                         onChange={(e) => onInputChange(e)}
                         label="Enter name"
                         name='name'/>
                         <TextField variant="standard" 
+                        value={signup.username || ''}
                         onChange={(e) => onInputChange(e)}
                         label="Enter username"
                         name='username'/>
                         <TextField variant="standard"
+                        value={signup.email || ''}
                         onChange={(e) => onInputChange(e)}
                         label="Enter email"
                         name='email'/>
                         <TextField variant="standard" 
+                        value={signup.password || ''}
                         onChange={(e) => onInputChange(e)}
                         label="Enter password"
                         name='password'/>
                         {/* <p></p> or use Typography of material UI*/}
 
                         {error && <Error>{error}</Error>}
-                        <SignupButton onClick={() => signupUser()}>Sign Up</SignupButton>
+                        <SignupButton onClick={signupUser}>Sign Up</SignupButton>
                         <Text style={{textAlign: 'center'}}>OR</Text>
                         <LoginButton variant='contained' onClick={() => toggleSignup()}>Already have an account</LoginButton>
                     </Wrapper>

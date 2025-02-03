@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppBar,styled,Toolbar, Typography } from '@mui/material'
+import { AppBar,styled,Toolbar } from '@mui/material'
 import { Link } from 'react-router-dom'
 
 const Component = styled(AppBar) `

@@ -7,6 +7,7 @@ import Login from './components/account/Login.jsx';
 import Home from './components/home/Home.jsx';
 import Header from './components/header/Header.jsx';
 import About from './components/about/About.jsx';
+import CreatePost from './components/create blog/CreatePost.jsx';
 
 
 const PrivateRoute = ({isUserAthenticated, ...props}) => {
@@ -28,10 +29,13 @@ function App() {
         <div style={{marginTop: 64}}> 
           <Routes>
             <Route path='/login' element={<Login setIsUserAuthenticated={setIsUserAuthenticated}/>}/>
+
             <Route path='/' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
               <Route path='/' element={<Home/>}/>
               <Route path='/about' element={<About/>}/>
+              <Route path='/create-post' element={<CreatePost/>}/>
             </Route>
+            
           </Routes>
         </div>
       </BrowserRouter>

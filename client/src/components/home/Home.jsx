@@ -12,7 +12,7 @@ function Home() {
                 <Category />
             </Grid>
                 <Grid container item xs={12} sm={10} lg={10}>
-                Posts
+                posts
             </Grid>
         </Grid>
     </>

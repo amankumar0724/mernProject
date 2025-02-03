@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
     headers:{
         "content-type":"application/json"
     }
-})
+});
 axiosInstance.interceptors.request.use(
     function (config) {
         return config;
@@ -70,7 +70,6 @@ const processError = (error) => {
         }
     }
 }
-
 
 const API = {};
 for(const [key,value] of Object.entries(SERVICE_URLS)) {
