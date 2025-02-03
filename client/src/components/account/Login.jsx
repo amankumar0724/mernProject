@@ -69,7 +69,7 @@ const loginInitialValues = {
 
 
 
-const Login = () => {
+const Login = ({setIsUserAuthenticated}) => {
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
 
     const [account,toggleAccount] = useState('login');
@@ -111,7 +111,8 @@ const Login = () => {
             sessionStorage.setItem('refreshToken',`Bearer ${response.data.refreshToken}`);
             // I need to use name,email(received from the api) that can be used in other components: so use context api 
             setAccount({username:response.data.username,name: response.data.name,email:response.data.email});
-            
+
+            setIsUserAuthenticated(true);
             navigate('/');
 
         } else {
