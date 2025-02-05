@@ -80,25 +80,28 @@ const Login = ({setIsUserAuthenticated}) => {
     
     const navigate = useNavigate();
 
-    const toggleSignup = () => {
-        account === 'login' ? toggleAccount('signup') : toggleAccount('login');
-    }
     const onInputChange = (e) => {
         // setSignup(e.target.name,e.target.value);
         // we dont want to override values of fields, rather we need to append so instead of line 65 use 67
         setSignup({...signup,[e.target.name]:e.target.value});
     }
     const signupUser = async () => {
-        const response = await API.userSignup(signup);
-        console.log(response);
-        if(response.isSuccess) {
-            setError('');
-            setSignup(signupInitialValues);
-            toggleSignup('login');
-        } else {
-            setError('Something went wrong !!!');
+        try {
+            const response = await API.userSignup(signup);
+            console.log("Signup response:", response);
+            if (response.isSuccess) {
+                setError('');
+                setSignup(signupInitialValues);
+                toggleSignup('login');
+            } else {
+                setError(response.msg.message || "Something went wrong!");
+            }
+        } catch (error) {
+            console.error("Signup error:", error);
+            setError(error.response?.data?.msg || "Something went wrong!");
         }
     };
+    
     
     const onValueChange = (e) => {
         setLogin({...login,[e.target.name]:e.target.value});
@@ -111,13 +114,14 @@ const Login = ({setIsUserAuthenticated}) => {
             sessionStorage.setItem('refreshToken',`Bearer ${response.data.refreshToken}`);
             // I need to use name,email(received from the api) that can be used in other components: so use context api 
             setAccount({username:response.data.username,name: response.data.name,email:response.data.email});
-
             setIsUserAuthenticated(true);
             navigate('/');
-
         } else {
             setError('Something went wrong !!!');
         }
+    }
+    const toggleSignup = () => {
+        account === 'login' ? toggleAccount('signup') : toggleAccount('login');
     }
 
     return (

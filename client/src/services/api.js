@@ -1,5 +1,9 @@
+// this file is used to make http requests
+
 import axios from 'axios'
 import { API_NOTIFICATION_MESSAGES, SERVICE_URLS } from '../constants/config.js';
+import { getAccessToken,getType } from './common-services.js';
+
 
 const API_URL = 'http://localhost:8000';
 
@@ -12,6 +16,11 @@ const axiosInstance = axios.create({
 });
 axiosInstance.interceptors.request.use(
     function (config) {
+        if(config.TYPE?.params) {
+            config.params = config.TYPE.params;
+        } else if(config.TYPE?.query) {
+            config.url = config.url + '/' + config.TYPE.query;
+        }
         return config;
     },
     function (error) {
@@ -72,27 +81,31 @@ const processError = (error) => {
 }
 
 const API = {};
-for(const [key,value] of Object.entries(SERVICE_URLS)) {
-    API[key] =  (body,showUploadProgress,showDownloadProgress) => 
-        axiosInstance({
-            method:value.method,
-            url:value.url,
-            data:body,
+for (const [key, value] of Object.entries(SERVICE_URLS)) {
+    API[key] = (body, showUploadProgress, showDownloadProgress) => {
+        return axiosInstance({
+            method: value.method,
+            url: value.url,
+            data: body,
             responseType: value.responseType,
+            headers: {
+                authorization:getAccessToken()
+            },
+            TYPE:getType(value,body),
             onUploadProgress: (progressEvent) => {
-                if(showUploadProgress) {
-                    let percentageCompleted = Math.round((progressEvent.loaded*100)/progressEvent.total);
+                if (showUploadProgress) {
+                    let percentageCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                     showUploadProgress(percentageCompleted);
                 }
             },
             onDownloadProgress: (progressEvent) => {
-                if(showDownloadProgress) {
-                    let percentageCompleted = Math.round((progressEvent.loaded*100)/progressEvent.total);
+                if (showDownloadProgress) {
+                    let percentageCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                     showDownloadProgress(percentageCompleted);
                 }
             }
         });
+    };
 }
 
-
-export {API};
+export { API };

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Box, styled, FormControl, InputBase, Button, TextareaAutosize } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { DataContext } from '../../contextAPI/DataProvider.jsx';
 import axios from 'axios';
 import {API} from '../../services/api.js';
@@ -42,10 +42,10 @@ const Content = styled(TextareaAutosize)`
 
 const initialBlog = {
     title: '',
-    description: '',
+    content: '',
     username: '',
     blogImage: '',
-    categories: '',
+    category: '',
     createdDate: new Date(),
 };
 
@@ -55,9 +55,10 @@ function CreatePost() {
     const [file, setFile] = useState(null);
     const { account } = useContext(DataContext);
     const url = post.blogImage 
-        ? post.blogImage 
-        : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
-
+    ? post.blogImage 
+    : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
+    
+    const navigate = useNavigate();
     useEffect(() => {
         const uploadImage = async () => {
             if (file) {
@@ -78,7 +79,7 @@ function CreatePost() {
         uploadImage();
         setPost((prev) => ({
             ...prev,
-            categories: location.search?.split('=')[1] || 'All',
+            category: location.search?.split('=')[1] || 'All',
             username: account.username
         }));
     }, [file]);
@@ -86,6 +87,15 @@ function CreatePost() {
     const handleChange = (e) => {
         setPost({ ...post, [e.target.name]: e.target.value });
     };
+
+    const publishBlog = async () => {
+        const response = await API.createPost(post);
+        if(response.isSuccess) {
+            navigate('/');
+        } else {
+            console.log('ERROR during publishing blog');
+        }
+    }
 
     return (
         <Container>
@@ -105,13 +115,13 @@ function CreatePost() {
                     onChange={handleChange}
                     name='title'
                 />
-                <Button variant='contained'>Publish</Button>
+                <Button variant='contained' onClick={publishBlog}>Publish</Button>
             </StyledForm>
             <Content 
                 minRows={5}
                 placeholder='Write your blog ...'
                 onChange={handleChange}
-                name='description'
+                name='content'
             />
         </Container>
     );

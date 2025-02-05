@@ -8,6 +8,7 @@ import Token from "../models/token.model.js";
 dotenv.config();
 
 export const signupUser = async (req,res) =>{//req stores all the requests made from the frontend, or any data entered in the frontend , all that comes in req
+    
     try {
         // WHAT IS SALT?=> SALT IS A RANDOM STRING (APPENDED BEFORE THE HASHED PASSWORD) THAT IS USED TO HASH THE PASSWORD
 
@@ -23,6 +24,7 @@ export const signupUser = async (req,res) =>{//req stores all the requests made 
             email: req.body.email,
             password: hashedPassword,
         }; 
+        console.log(req.body);
         const newUser = new User(user);
         await newUser.save();
         return res.status(200).json({msg:"Sign up successfully !"})

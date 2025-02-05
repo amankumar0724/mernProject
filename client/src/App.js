@@ -29,8 +29,8 @@ function App() {
         <div style={{marginTop: 64}}> 
           <Routes>
             <Route path='/login' element={<Login setIsUserAuthenticated={setIsUserAuthenticated}/>}/>
-
             <Route path='/' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
+
               <Route path='/' element={<Home/>}/>
               <Route path='/about' element={<About/>}/>
               <Route path='/create-post' element={<CreatePost/>}/>

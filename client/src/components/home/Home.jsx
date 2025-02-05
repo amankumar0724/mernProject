@@ -2,6 +2,7 @@ import React from 'react'
 import HeroSection from './HeroSection.jsx'
 import Category from './Category.jsx';
 import { Grid } from '@mui/material';
+import AllPosts from './AllPosts.jsx';
 
 function Home() {
   return (
@@ -12,7 +13,7 @@ function Home() {
                 <Category />
             </Grid>
                 <Grid container item xs={12} sm={10} lg={10}>
-                posts
+                <AllPosts/>
             </Grid>
         </Grid>
     </>

@@ -23,8 +23,12 @@ export const API_NOTIFICATION_MESSAGES = {
 }
 
 // API service calls
+// This is api endpoints and request methods
+// need service calls {url: '/',method:'post/get/delete/patch/put', params:true/false,query:true/false}
 export const SERVICE_URLS = {
-    userSignup: {url:'/signup',method:'POST'},
     userLogin: {url:'/login',method:'POST'},
+    userSignup: {url:'/signup',method:'POST'},
     uploadFile: {url:'/file/upload',method:'POST'},
+    createPost: {url:'/create',method:'POST'},
+    getAllPosts: {url:'/all-posts',method:'GET',params:true},
 }

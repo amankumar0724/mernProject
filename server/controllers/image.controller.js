@@ -19,7 +19,7 @@ export const uploadImage = async (req,res) => {
     // response.status(200).json(imageUrl);  
     try {
         // Upload to Cloudinary
-        console.log(req);
+        // console.log(req);
         const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path, {
             folder: 'blog_images'
         });
