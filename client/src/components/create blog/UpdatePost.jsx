@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Box, styled, FormControl, InputBase, Button, TextareaAutosize } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { DataContext } from '../../contextAPI/DataProvider.jsx';
 import axios from 'axios';
 import {API} from '../../services/api.js';
@@ -52,7 +52,7 @@ const initialBlog = {
     createdDate: new Date(),
 };
 
-function CreatePost() {
+function UpdatePost() {
     const location = useLocation();
     const [post, setPost] = useState(initialBlog);
     const [file, setFile] = useState(null);
@@ -60,8 +60,19 @@ function CreatePost() {
     const url = post.blogImage 
     ? post.blogImage 
     : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
-    
+    const {id} = useParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const getData = async () => {
+            const response = await API.getPostById(id);
+            if(response.isSuccess) {
+                setPost(response.data);
+            }
+        }
+        getData();
+    },[])
+
     useEffect(() => {
         const uploadImage = async () => {
             if (file) {
@@ -91,10 +102,10 @@ function CreatePost() {
         setPost({ ...post, [e.target.name]: e.target.value });
     };
 
-    const publishBlog = async () => {
-        const response = await API.createPost(post);
+    const updateBlog = async () => {
+        const response = await API.updatePost(post);
         if(response.isSuccess) {
-            navigate('/');
+            navigate(`/show-blog/${id}`);
         } else {
             console.log('ERROR during publishing blog');
         }
@@ -115,13 +126,15 @@ function CreatePost() {
                 />
                 <InputTextField  
                     placeholder='Title' 
+                    value={post.title}
                     onChange={handleChange}
                     name='title'
                 />
-                <Button variant='contained' onClick={publishBlog}>Publish</Button>
+                <Button variant='contained' onClick={updateBlog}>Update</Button>
             </StyledForm>
             <Content 
                 minRows={5}
+                value={post.content}
                 placeholder='Write your blog ...'
                 onChange={handleChange}
                 name='content'
@@ -130,4 +143,4 @@ function CreatePost() {
     );
 }
 
-export default CreatePost;
+export default UpdatePost;

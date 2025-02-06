@@ -24,3 +24,38 @@ export const getAllBlogs = async (req,res) => {
         return res.status(500).json({msg:`Cannot fetch all blogs ${error.msg}`});
     }
 }
+export const getBlogById = async (req,res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        return res.status(200).json(post);
+    } catch (error) {
+        return res.status(500).json({msg:`Cannot fetch this blog ${error.msg}`});
+    }
+}
+export const updateBlog = async(req,res) => {
+    try {   
+        const post = await Post.findById(req.params.id);
+        if(!post) {
+            return res.status(500).json({msg:`Post not found`}) 
+        }
+        // {$set}  = when we need to replace any object in an array 
+        // {$addToSet}  = when we need to append any object in an array 
+        await Post.findByIdAndUpdate(req.params.id,{$set: req.body})//{$set},{$addToSet}
+        return res.status(200).json({msg:"Blog updated successfully ! ! !"});
+    } catch (error) {
+        return res.status(500).json({msg:`Cannot update this blog ${error.msg}`}) 
+    }
+}
+export const deleteBlog = async (req,res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if(!post) {
+            return res.status(500).json({msg:`Post not found`});
+        }
+        await Post.findByIdAndDelete(req.params.id);//or
+        // await Post.delete();
+        return res.status(200).json({msg:"Blog deleted successfully ! ! !"});
+    } catch (error) {
+        return res.status(500).json({msg:`Cannot delete this blog ${error.msg}`});
+    }
+}
