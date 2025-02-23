@@ -39,18 +39,18 @@ const Comments = ({ post }) => {
     const { account } = useContext(DataContext);
 
     useEffect(() => {
-        try {
-            const fetchAllComments = async () => {
-                const response = await API.getAllComments(post._id);
-                if (response.isSuccess) {
-                    setComments(response.data);
-                }
-            }    
-            fetchAllComments();
-        } catch (error) {
-            console.log(`Error in fetching all comments ${error}`);
-        }
-    }, [post,toggleState]);
+        if (!post || !post._id) return;
+        
+        const fetchAllComments = async () => {
+          const response = await API.getAllComments(post._id);
+          if (response.isSuccess) {
+            setComments(response.data);
+          }
+        };
+        
+        fetchAllComments();
+      }, [post, toggleState]);
+      
 
     const handleChange = (e) => {
         setComment({

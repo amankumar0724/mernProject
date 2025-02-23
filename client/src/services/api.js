@@ -79,11 +79,11 @@ const processError = (error) => {
         }
     }
 }
-
-const API = {};
+                        
+const API={};
 for (const [key, value] of Object.entries(SERVICE_URLS)) {
-    API[key] = (body, showUploadProgress, showDownloadProgress) => {
-        return axiosInstance({
+    API[key] = (body, showUploadProgress, showDownloadProgress) => (
+        axiosInstance({
             method: value.method,
             url: value.url,
             data: (value.method === 'DELETE' ? {} : body),
@@ -104,8 +104,7 @@ for (const [key, value] of Object.entries(SERVICE_URLS)) {
                     showDownloadProgress(percentageCompleted);
                 }
             }
-        });
-    };
+        })
+    )
 }
-
 export { API };

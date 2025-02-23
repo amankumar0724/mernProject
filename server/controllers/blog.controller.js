@@ -7,6 +7,7 @@ export const publishBlog = async (req,res) => {
         post.save();
         return res.status(200).json({msg:"Post saved successfully."});
     } catch (error) {
+        console.log(error);
         return res.status(500).json(error);        
     }
 }
@@ -21,6 +22,7 @@ export const getAllBlogs = async (req,res) => {
         }
         return res.status(200).json(allPosts);
     } catch (error) {
+        console.log(error);
         return res.status(500).json({msg:`Cannot fetch all blogs ${error.msg}`});
     }
 }
@@ -29,6 +31,7 @@ export const getBlogById = async (req,res) => {
         const post = await Post.findById(req.params.id);
         return res.status(200).json(post);
     } catch (error) {
+        console.log(error);
         return res.status(500).json({msg:`Cannot fetch this blog ${error.msg}`});
     }
 }
@@ -43,6 +46,7 @@ export const updateBlog = async(req,res) => {
         await Post.findByIdAndUpdate(req.params.id,{$set: req.body})//{$set},{$addToSet}
         return res.status(200).json({msg:"Blog updated successfully ! ! !"});
     } catch (error) {
+        console.log(error);
         return res.status(500).json({msg:`Cannot update this blog ${error.msg}`}) 
     }
 }
@@ -56,6 +60,7 @@ export const deleteBlog = async (req,res) => {
         // await Post.delete();
         return res.status(200).json({msg:"Blog deleted successfully ! ! !"});
     } catch (error) {
+        console.log(error);
         return res.status(500).json({msg:`Cannot delete this blog ${error.msg}`});
     }
 }

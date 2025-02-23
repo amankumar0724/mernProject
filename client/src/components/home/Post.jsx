@@ -1,4 +1,3 @@
-
 import { styled, Box, Typography } from '@mui/material';
 
 const Container = styled(Box)`
@@ -9,6 +8,14 @@ const Container = styled(Box)`
     align-items: center;
     flex-direction: column;
     height: 350px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+    border: 4px solid rgb(231, 231, 206);
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        border: 4px solid rgb(223, 177, 70);
+        background-color: rgb(235, 205, 153)        
+    }
     & > img, & > p {
         padding: 0 5px 5px 5px;
     }
@@ -22,13 +29,13 @@ const Image = styled('img')({
 });
 
 const Text = styled(Typography)`
-    color: #878787
+    color: #878787;
     font-size: 12px;
 `;
 
 const Heading = styled(Typography)`
     font-size: 18px;
-    font-weight: 600
+    font-weight: 600;
 `;
 
 const Details = styled(Typography)`
@@ -36,9 +43,11 @@ const Details = styled(Typography)`
     word-break: break-word;
 `;
 
-const Post = ({post}) => {
+const Post = ({ post }) => {
 
-    const url = post.blogImage ? post.blogImage : 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=752&q=80';
+    const url = post.blogImage 
+        ? post.blogImage 
+        : 'hero2.jpg';
     
     const addEllipsis = (str, limit) => {
         return str.length > limit ? str.substring(0, limit) + '...' : str;
@@ -54,4 +63,5 @@ const Post = ({post}) => {
         </Container>
     )
 }
+
 export default Post;
