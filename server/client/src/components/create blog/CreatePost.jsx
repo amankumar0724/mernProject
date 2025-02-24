@@ -93,7 +93,8 @@ function CreatePost() {
                 formData.append('file', file);
 
                 try {
-                    const res = await axios.post('http://localhost:8000/file/upload', formData);
+                    const api_url = '';
+                    const res = await axios.post(`${api_url}/file/upload`, formData);
                     setPost((prev) => ({ ...prev, blogImage: res.data.url }));
                 } catch (error) {
                     console.error('Error uploading image:', error);

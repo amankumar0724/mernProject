@@ -5,7 +5,7 @@ import { API_NOTIFICATION_MESSAGES, SERVICE_URLS } from '../constants/config.js'
 import { getAccessToken,getType } from './common-services.js';
 
 
-const API_URL = 'http://localhost:8000';
+const API_URL = '';
 
 const axiosInstance = axios.create({
     baseURL:API_URL,

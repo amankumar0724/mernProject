@@ -81,7 +81,8 @@ function UpdatePost() {
                 formData.append('file', file);
 
                 try {
-                    const res = await axios.post('http://localhost:8000/file/upload', formData);
+                    const api_url = '';
+                    const res = await axios.post(`${api_url}/file/upload`, formData);
                     // const res = await API.uploadFile(formData);
                     setPost((prev) => ({ ...prev, blogImage: res.data.url })); // Store Cloudinary URL
                 } catch (error) {
