@@ -47,7 +47,7 @@ const CommentLayout = ({ comment, setToggleState }) => {
             <Container>
                 <Name>{comment.name}</Name>
                 <StyledDate>{new Date(comment.date).toDateString()}</StyledDate>
-                { comment.name === account.username && <DeleteIcon onClick={() => deleteComm()} /> }
+                { comment.name === account.username && <DeleteIcon onClick={() => deleteComm()} cursor='pointer'/> }
             </Container>
             <Typography>{comment.comments}</Typography>
         </Component>

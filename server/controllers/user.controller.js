@@ -52,6 +52,11 @@ export const signupUser = async (req, res) => {//req stores all the requests mad
         if(existingUser) {
             return res.status(400).json({ error: "This email already exists" });
         }
+        // Validate email format before saving
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(user.email)) {
+            return res.status(501).json({message: "Please enter a valid credentials." });
+        }
         
         const newUser = new User(user);
         await newUser.save();

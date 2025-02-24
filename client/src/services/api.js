@@ -9,7 +9,7 @@ const API_URL = 'http://localhost:8000';
 
 const axiosInstance = axios.create({
     baseURL:API_URL,
-    timeout:10000,//delay of 10sec
+    timeout:20000,//delay of 10sec
     headers:{
         "content-type":"application/json"
     }
@@ -66,7 +66,7 @@ const processError = (error) => {
         return {
             isError:true,
             msg:API_NOTIFICATION_MESSAGES.requestFailure,
-            code:""
+            code:"503"
         }
     } else {
         //proper frontend mistake

@@ -1,13 +1,22 @@
-import { Box, TextField, Button, styled, Typography } from '@mui/material';
+import { 
+    Box, TextField, Button, styled, Typography, CircularProgress, InputAdornment, IconButton 
+} from '@mui/material';
 import { useState, useContext } from 'react';
 import { API } from '../../services/api.js';
 import { DataContext } from '../../contextAPI/DataProvider.jsx';
 import { useNavigate } from 'react-router-dom';
 
-// handling css 
+// Icons
+import PersonIcon from '@mui/icons-material/Person';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
+// Styling Components
 const Component = styled(Box)`
     width: 400px;
-    margin: auto; /* to center align */
+    margin: auto;
     box-shadow: 5px 2px 5px 2px rgb(0 0 0/ 0.6);
 `;
 
@@ -58,6 +67,14 @@ const Image = styled('img')({
     padding: '50px 0 0',
 });
 
+const Loader = styled(Box)`
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    min-height : 100vh;
+`;
+
+// Initial Values
 const signupInitialValues = {
     name: '',
     username: '',
@@ -74,32 +91,39 @@ const Login = ({ setIsUserAuthenticated }) => {
     const imageURL = '/ThinkSyncLogo.png';
 
     const [account, toggleAccount] = useState('login');
+    const [loading, setLoading] = useState(false);
     const [signup, setSignup] = useState(signupInitialValues);
     const [error, setError] = useState('');
     const [login, setLogin] = useState(loginInitialValues);
+    const [showPassword, setShowPassword] = useState(false);
     const { setAccount } = useContext(DataContext);
 
     const navigate = useNavigate();
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const onInputChange = (e) => {
         setSignup({ ...signup, [e.target.name]: e.target.value });
     };
 
     const signupUser = async () => {
+        setLoading(true);
         try {
-            console.log("Signup Data:", signup);
-            console.log("API.userSignup:", API.userSignup);
             const response = await API.userSignup(signup);
-            console.log(response);
             if (response.isSuccess) {
                 setError('');
                 setSignup(signupInitialValues);
                 toggleSignup();
+            } else {
+                setError(response.message);
             }
         } catch (error) {
             console.error("Signup error:", error);
-            setError(error.response?.data?.msg || "Something went wrong!");
+            setError("Something went wrong!");
         }
+        setLoading(false);
     };
 
     const onValueChange = (e) => {
@@ -107,21 +131,30 @@ const Login = ({ setIsUserAuthenticated }) => {
     };
 
     const loginUser = async () => {
-        const response = await API.userLogin(login);
-        if (response.isSuccess) {
-            setError('');
-            sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
-            sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
-            setAccount({
-                username: response.data.username,
-                name: response.data.name,
-                email: response.data.email
-            });
-            setIsUserAuthenticated(true);
-            navigate('/');
-        } else {
-            setError('Something went wrong !!!');
+        setLoading(true);
+        try {
+            const response = await API.userLogin(login);
+            if (response.isSuccess) {
+                setError('');
+                sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+                sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+                setAccount({
+                    username: response.data.username,
+                    name: response.data.name,
+                    email: response.data.email
+                });
+                setIsUserAuthenticated(true);
+                navigate('/');
+            } 
+        } catch (error) {
+            console.log(error)
+            if (error.code === 503) {
+                setError('Something went wrong, check your internet connection');
+            } else {
+                setError('Wrong credentials!!!');
+            }
         }
+        setLoading(false);
     };
 
     const toggleSignup = () => {
@@ -129,80 +162,133 @@ const Login = ({ setIsUserAuthenticated }) => {
     };
 
     return (
-        <Component>
-            <Box>
-                <Image src={imageURL} alt="login" />
-                {account === 'login' ? (
-                    <Wrapper>
-                        <TextField
-                            variant="standard"
-                            value={login.usernameOrEmail || ''}
-                            onChange={(e) => onValueChange(e)}
-                            name='usernameOrEmail'
-                            label="Enter username or email"
-                        />
-                        <TextField
-                            type="password" // password field hidden by dots
-                            variant="standard"
-                            value={login.password}
-                            onChange={(e) => onValueChange(e)}
-                            name='password'
-                            label="Enter password"
-                        />
-
-                        {error && <Error>{error}</Error>}
-                        <LoginButton variant='contained' onClick={loginUser}>
-                            Login
-                        </LoginButton>
-                        <Text style={{ textAlign: 'center' }}>OR</Text>
-                        <SignupButton onClick={toggleSignup}>
-                            Create an account
-                        </SignupButton>
-                    </Wrapper>
-                ) : (
-                    <Wrapper>
-                        <TextField
-                            variant="standard"
-                            value={signup.name || ''}
-                            onChange={(e) => onInputChange(e)}
-                            label="Enter name"
-                            name='name'
-                        />
-                        <TextField
-                            variant="standard"
-                            value={signup.username || ''}
-                            onChange={(e) => onInputChange(e)}
-                            label="Enter username"
-                            name='username'
-                        />
-                        <TextField
-                            variant="standard"
-                            value={signup.email || ''}
-                            onChange={(e) => onInputChange(e)}
-                            label="Enter email"
-                            name='email'
-                        />
-                        <TextField
-                            type="password" // password field hidden by dots
-                            variant="standard"
-                            value={signup.password || ''}
-                            onChange={(e) => onInputChange(e)}
-                            label="Enter password"
-                            name='password'
-                        />
-
-                        {error && <Error>{error}</Error>}
-                        <SignupButton onClick={signupUser}>
-                            Sign Up
-                        </SignupButton>
-                        <Text style={{ textAlign: 'center' }}>OR</Text>
-                        <LoginButton variant='contained' onClick={toggleSignup}>
-                            Already have an account
-                        </LoginButton>
-                    </Wrapper>
-                )}
-            </Box>
-        </Component>
+        <>
+            {loading ? (
+                <Loader>
+                    <CircularProgress sx={{ color: '#c04f4f' }} />
+                </Loader>
+            ) : (
+                <Component>
+                    <Box>
+                        <Image src={imageURL} alt="login" />
+                        {account === 'login' ? (
+                            <Wrapper>
+                                <TextField
+                                    variant="standard"
+                                    value={login.usernameOrEmail || ''}
+                                    onChange={onValueChange}
+                                    name='usernameOrEmail'
+                                    label="Enter username or email"
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <AccountCircleIcon fontSize="small" sx={{ color: 'gray' }} />
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                                <TextField
+                                    type={showPassword ? "text" : "password"}
+                                    variant="standard"
+                                    value={login.password}
+                                    onChange={onValueChange}
+                                    name='password'
+                                    label="Enter password"
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={togglePasswordVisibility} edge="end">
+                                                    {showPassword ? <VisibilityOff fontSize="small" sx={{ color: 'gray' }} /> : <Visibility fontSize="small" sx={{ color: 'gray' }} />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                        sx: { paddingRight: '4px' }
+                                    }}
+                                />
+                                {error && <Error>{error}</Error>}
+                                <LoginButton variant='contained' onClick={loginUser}>
+                                    Login
+                                </LoginButton>
+                                <Text style={{ textAlign: 'center' }}>OR</Text>
+                                <SignupButton onClick={toggleSignup}>
+                                    Create an account
+                                </SignupButton>
+                            </Wrapper>
+                        ) : (
+                            <Wrapper>
+                                <TextField
+                                    variant="standard"
+                                    value={signup.name || ''}
+                                    onChange={onInputChange}
+                                    label="Enter name"
+                                    name='name'
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <PersonIcon fontSize="small" sx={{ color: 'gray' }} />
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                                <TextField
+                                    variant="standard"
+                                    value={signup.username || ''}
+                                    onChange={onInputChange}
+                                    label="Enter username"
+                                    name='username'
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <AccountCircleIcon fontSize="small" sx={{ color: 'gray' }} />
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                                <TextField
+                                    variant="standard"
+                                    value={signup.email || ''}
+                                    onChange={onInputChange}
+                                    label="Enter email"
+                                    name='email'
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <EmailIcon fontSize="small" sx={{ color: 'gray' }} />
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                                <TextField
+                                    type={showPassword ? "text" : "password"}
+                                    variant="standard"
+                                    value={signup.password || ''}
+                                    onChange={onInputChange}
+                                    label="Enter password"
+                                    name='password'
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={togglePasswordVisibility} edge="end" >
+                                                    {showPassword ? <VisibilityOff fontSize="small" sx={{ color: 'gray' }} /> : <Visibility fontSize="small"  sx={{ color: 'gray' }} />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                        sx: { paddingRight: '4px' }
+                                    }}
+                                />
+                                <SignupButton onClick={signupUser}>
+                                    Sign Up
+                                </SignupButton>
+                                <Text style={{ textAlign: 'center' }}>OR</Text>
+                                <LoginButton variant='contained' onClick={toggleSignup}>
+                                    Already have an account
+                                </LoginButton>
+                            </Wrapper>
+                        )}
+                    </Box>
+                </Component>
+            )}
+        </>
     );
 };
 

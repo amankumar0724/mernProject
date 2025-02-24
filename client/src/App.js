@@ -11,6 +11,7 @@ import Contact from './components/contacts/Contact.jsx'
 import CreatePost from './components/create blog/CreatePost.jsx';
 import UpdatePost from './components/create blog/UpdatePost.jsx';
 import ShowBlog from './components/show blog/ShowBlog.jsx';
+import Profile from './components/profile/Profile.jsx';
 
 
 
@@ -22,10 +23,10 @@ import ShowBlog from './components/show blog/ShowBlog.jsx';
 //     </>
 //     : <Navigate replace to='/login'/>
 // }
-const PrivateRoute = ({ isUserAthenticated ,...props}) => {
+const PrivateRoute = ({ isUserAthenticated, setIsUserAuthenticated }) => {
   return isUserAthenticated ? (
     <>
-      <Header />
+      <Header setIsUserAuthenticated={setIsUserAuthenticated} />
       <Outlet />  
     </>
   ) : (
@@ -33,44 +34,43 @@ const PrivateRoute = ({ isUserAthenticated ,...props}) => {
   );
 };
 
-
 function App() {
-  const [isUserAthenticated,setIsUserAuthenticated] = useState(false);
+  const [isUserAthenticated, setIsUserAuthenticated] = useState(false);
 
   return (
     <DataProvider>
       <BrowserRouter>
-        
-        <div style={{marginTop: 64}}> 
+        <div style={{ marginTop: 64 }}>
           <Routes>
-            <Route path='/login' element={<Login setIsUserAuthenticated={setIsUserAuthenticated}/>}/>
+            <Route path='/login' element={<Login setIsUserAuthenticated={setIsUserAuthenticated} />} />
 
-            <Route path='/' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
-              <Route path='/' element={<Home/>}/>
+            <Route path='/' element={<PrivateRoute isUserAthenticated={isUserAthenticated} setIsUserAuthenticated={setIsUserAuthenticated} />}>
+              <Route path='/' element={<Home />} />
             </Route>
 
-            <Route path='/about' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
-              <Route path='/about' element={<About/>}/>
+            <Route path='/about' element={<PrivateRoute isUserAthenticated={isUserAthenticated} setIsUserAuthenticated={setIsUserAuthenticated} />}>
+              <Route path='/about' element={<About />} />
             </Route>
 
-            <Route path='/create-post' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
-              <Route path='/create-post' element={<CreatePost/>}/>
+            <Route path='/create-post' element={<PrivateRoute isUserAthenticated={isUserAthenticated} setIsUserAuthenticated={setIsUserAuthenticated} />}>
+              <Route path='/create-post' element={<CreatePost />} />
             </Route>
 
-            <Route path='/show-blog/:id' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
+            <Route path='/show-blog/:id' element={<PrivateRoute isUserAthenticated={isUserAthenticated} setIsUserAuthenticated={setIsUserAuthenticated} />}>
               <Route path='/show-blog/:id' element={<ShowBlog />} />
             </Route>
 
-            <Route path='/update-post/:id' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
+            <Route path='/update-post/:id' element={<PrivateRoute isUserAthenticated={isUserAthenticated} setIsUserAuthenticated={setIsUserAuthenticated} />}>
               <Route path='/update-post/:id' element={<UpdatePost />} />
             </Route>
 
-            <Route path='/contact' element={<PrivateRoute isUserAthenticated={isUserAthenticated}/>}>
+            <Route path='/contact' element={<PrivateRoute isUserAthenticated={isUserAthenticated} setIsUserAuthenticated={setIsUserAuthenticated} />}>
               <Route path='/contact' element={<Contact />} />
             </Route>
 
-
-            
+            <Route path='/profile' element={<PrivateRoute isUserAthenticated={isUserAthenticated} setIsUserAuthenticated={setIsUserAuthenticated} />}>
+              <Route path='/profile' element={<Profile />} />
+            </Route>
           </Routes>
         </div>
       </BrowserRouter>

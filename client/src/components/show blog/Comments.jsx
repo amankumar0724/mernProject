@@ -1,9 +1,15 @@
 import { useState, useEffect, useContext } from 'react';
-import { Box, TextareaAutosize, Button, styled } from '@mui/material';
+import { 
+    Box, 
+    TextareaAutosize, 
+    Button, 
+    styled,
+    CircularProgress
+} from '@mui/material';
 import { DataContext } from '../../contextAPI/DataProvider';
 import { API } from '../../services/api';
 import CommentLayout from './CommentLayout';
-
+import { ErrorDialog } from '../../services/common-services';
 
 const Container = styled(Box)`
     margin-top: 100px;
@@ -22,35 +28,44 @@ const StyledTextArea = styled(TextareaAutosize)`
     margin: 0 20px;
 `;
 
+const LoaderBox = styled(Box)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+`;
+
 const initialValue = {
     name: '',
     postId: '',
     date: new Date(),
     comments: ''
-}
+};
 
 const Comments = ({ post }) => {
-    const url = 'https://static.thenounproject.com/png/12017-200.png'
+    const url = 'https://static.thenounproject.com/png/12017-200.png';
 
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState(initialValue);
     const [toggleState, setToggleState] = useState(false);
-
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
     const { account } = useContext(DataContext);
 
     useEffect(() => {
         if (!post || !post._id) return;
         
         const fetchAllComments = async () => {
-          const response = await API.getAllComments(post._id);
-          if (response.isSuccess) {
-            setComments(response.data);
-          }
+            setLoading(true);
+            const response = await API.getAllComments(post._id);
+            if (response.isSuccess) {
+                setComments(response.data);
+            }
+            setLoading(false);
         };
         
         fetchAllComments();
-      }, [post, toggleState]);
-      
+    }, [post, toggleState]);
 
     const handleChange = (e) => {
         setComment({
@@ -59,15 +74,23 @@ const Comments = ({ post }) => {
             postId: post._id,
             comments: e.target.value
         });
-    }
+    };
 
-    const addComment = async() => {
-        const res = await API.addNewComment(comment);
-        if(res.isSuccess) {
-            setComment(initialValue)
+    const addComment = async () => {
+        if (!comment.comments.trim()) {
+            setErrorDialogOpen(true);
+            return;
         }
-        setToggleState(prevState => !prevState);
-    }
+        try {
+            const res = await API.addNewComment(comment);
+            if (res.isSuccess) {
+                setComment(initialValue);
+            }
+            setToggleState(prevState => !prevState);
+        } catch (error) {
+            setErrorDialogOpen(true);
+        }
+    };
     
     return (
         <Box>
@@ -76,7 +99,7 @@ const Comments = ({ post }) => {
                 <StyledTextArea 
                     minRows={5} 
                     placeholder="what's on your mind?"
-                    onChange={(e) => handleChange(e)} 
+                    onChange={handleChange} 
                     value={comment.comments}
                 />
                 <Button 
@@ -84,18 +107,27 @@ const Comments = ({ post }) => {
                     color="primary" 
                     size="medium" 
                     style={{ height: 40 }}
-                    onClick={(e) => addComment(e)}
+                    onClick={addComment}
                 >Comment</Button>             
             </Container>
-            <Box>
-                {
-                    comments && comments.length > 0 && comments.map((comment,index) => (
+            {loading ? (
+                <LoaderBox>
+                    <CircularProgress sx={{color:'#c04f4f'}}/>
+                </LoaderBox>
+            ) : (
+                <Box>
+                    {comments.length > 0 && comments.map((comment, index) => (
                         <CommentLayout key={index} comment={comment} setToggleState={setToggleState} />
-                    ))
-                }
-            </Box>
+                    ))}
+                </Box>
+            )}
+            <ErrorDialog 
+                open={errorDialogOpen} 
+                onClose={() => setErrorDialogOpen(false)} 
+                message="No comment written before posting."
+            />
         </Box>
-    )
-}
+    );
+};
 
 export default Comments;

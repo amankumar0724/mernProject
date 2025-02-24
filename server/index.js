@@ -19,7 +19,9 @@ app.use('/',router);
 
 
 app.listen(PORT, () => {
+    console.log("=======================================================================");
     console.log(`Server is running on port ${PORT}`);
+    console.log("=======================================================================");
 })
 const USERNAME = process.env.DB_USERNAME;
 const PASSWORD = process.env.DB_PASSWORD;

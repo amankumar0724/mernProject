@@ -1,5 +1,6 @@
-
+import React, { useContext } from 'react';
 import { styled, Box, Typography } from '@mui/material';
+import { DataContext } from '../../contextAPI/DataProvider'; // Make sure this path is correct
 
 const Image = styled(Box)`
     width: 100%;
@@ -13,12 +14,6 @@ const Image = styled(Box)`
     justify-content: center;
 `;
 
-
-// const Heading = styled(Typography)`
-//     font-size: 70px;
-//     color: #FFFFFF;
-//     line-height: 1
-// `;
 const Heading = styled(Typography)`
     font-size: 70px;
     background: linear-gradient(45deg, #FF0000, #FFA500, #FFFF00);
@@ -29,7 +24,6 @@ const Heading = styled(Typography)`
     color: transparent;
 `;
 
-
 const SubHeading = styled(Typography)`
     font-size: 20px;
     background: #FFFFFF;
@@ -39,23 +33,28 @@ const SubHeading = styled(Typography)`
     border-radius: 7px;
 `;
 
-
-// const SubHeading = styled(Typography)`
-//     font-size: 20px;
-//     background: linear-gradient(45deg, #FF0000, #FFA500, #FFFF00);
-//     -webkit-background-clip: text;
-//     -webkit-text-fill-color: transparent;
-//     background-clip: text;
-//     color: transparent;
-// `;
+const UserName = styled(Typography)`
+    font-size: 30px;
+    background: linear-gradient(45deg, #FF0000, #FFA500, #FFFF00);
+    line-height: 1;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+`;
 
 const HeroSection = () => {
+    // const { account } = useContext(DataContext);
+
     return (
         <Image>
             <Heading>ThinkSync</Heading>
             <SubHeading>Think Write Sync</SubHeading>
+            {/* {account?.name && (
+                <UserName>Welcome {account.name}</UserName> 
+            )} */}
         </Image>
-    )
-}
+    );
+};
 
 export default HeroSection;
