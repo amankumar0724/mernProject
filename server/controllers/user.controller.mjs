@@ -1,8 +1,8 @@
-import User from "../models/user.model.js";
+import User from "../models/user.model.mjs";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Token from "../models/token.model.js";
+import Token from "../models/token.model.mjs";
 
 
 dotenv.config();
@@ -15,7 +15,6 @@ const isValidPassword = (password) => {
 export const signupUser = async (req, res) => {//req stores all the requests made from the frontend, or any data entered in the frontend , all that comes in req
     
     try {
-        console.log(req.body);
         // Validate the plain text password first
         if (!isValidPassword(req.body.password)) {
             return res.status(400).json({
@@ -68,8 +67,6 @@ export const signupUser = async (req, res) => {//req stores all the requests mad
 }
 
 export const loginUser = async (req,res) => {
-    // console.log("************");
-    // console.log(req.body);//{ usernameOrEmail: 'a', password: 'Qwerty@123' }
     let user = await User.findOne({username: req.body.usernameOrEmail})
     if(!user) {
         user = await User.findOne({email: req.body.usernameOrEmail});    
@@ -84,7 +81,7 @@ export const loginUser = async (req,res) => {
             const accessToken = jwt.sign(user.toJSON(),process.env.ACCESS_SECRET_KEY,{expiresIn:'15m'});
             const refreshToken = jwt.sign(user.toJSON(),process.env.REFRESH_SECRET_KEY);
             const newToken = new Token({token:refreshToken});
-            // console.log(refreshToken);
+           
             await newToken.save();
             return res.status(200).json({accessToken,refreshToken,name:user.name,username:user.username,email:user.email});
         } else {

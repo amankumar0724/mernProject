@@ -1,6 +1,6 @@
 import {v2 as cloudinary} from 'cloudinary';
 import fs from 'fs';//file system = fs=>file handling
-import Blog from '../models/blog.model.js';
+import Blog from '../models/blog.model.mjs';
 
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -9,7 +9,6 @@ cloudinary.config({
 });
 export const uploadImage = async (req,res) => {
     // const imageLocalPath = req.files?.blogImage[0].path;
-    // console.log(imageLocalPath);
     // if(!imageLocalPath) {
     //     return res.
     // }
@@ -19,7 +18,6 @@ export const uploadImage = async (req,res) => {
     // response.status(200).json(imageUrl);  
     try {
         // Upload to Cloudinary
-        // console.log(req);
         const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path, {
             folder: 'blog_images'
         });

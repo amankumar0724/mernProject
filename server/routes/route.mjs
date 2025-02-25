@@ -1,12 +1,12 @@
 // route: end points of apis
 
 import express from 'express';
-import {signupUser,loginUser} from '../controllers/user.controller.js'
-import { uploadImage } from '../controllers/image.controller.js';
-import { publishBlog,getAllBlogs,getBlogById,updateBlog,deleteBlog } from '../controllers/blog.controller.js' 
-import upload from '../middlewares/upload.middleware.js';
-import {verifyJWT} from '../middlewares/auth.middleware.js'
-import { addNewComment, deleteComment, getAllComments } from '../controllers/comment.controller.js';
+import {signupUser,loginUser} from '../controllers/user.controller.mjs'
+import { uploadImage } from '../controllers/image.controller.mjs';
+import { publishBlog,getAllBlogs,getBlogById,updateBlog,deleteBlog } from '../controllers/blog.controller.mjs' 
+import upload from '../middlewares/upload.middleware.mjs';
+import {verifyJWT} from '../middlewares/auth.middleware.mjs'
+import { addNewComment, deleteComment, getAllComments } from '../controllers/comment.controller.mjs';
 
 
 const router = express.Router();

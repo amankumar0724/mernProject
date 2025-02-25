@@ -107,7 +107,7 @@ function UpdatePost() {
         if(response.isSuccess) {
             navigate(`/show-blog/${id}`);
         } else {
-            console.log('ERROR during publishing blog');
+            console.log('ERROR during updating blog');
         }
     }
 

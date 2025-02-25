@@ -1,4 +1,4 @@
-import Post from "../models/post.model.js"
+import Post from "../models/post.model.mjs"
 
 export const publishBlog = async (req,res) => {
     // first we need to validate : access token
