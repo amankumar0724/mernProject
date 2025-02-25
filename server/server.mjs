@@ -13,8 +13,11 @@ dotenv.config();
 
 const app = express();
 const _dirname = path.resolve();
-
-app.use(cors());
+const corsOptions = {
+    origin: "https://thinksync-think-write-sync.onrender.com/",
+    credentials: true,
+}
+app.use(cors(corsOptions));
 app.use(bodyParser.json({extended:true}));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/',router);
