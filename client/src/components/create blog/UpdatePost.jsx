@@ -81,7 +81,8 @@ function UpdatePost() {
                 formData.append('file', file);
 
                 try {
-                    const res = await axios.post('https://thinksync-think-write-sync.onrender.com//file/upload', formData);
+                    // ********
+                    const res = await axios.post(`https://thinksync-think-write-sync.onrender.com//file/upload`, formData);
                     // const res = await API.uploadFile(formData);
                     setPost((prev) => ({ ...prev, blogImage: res.data.url })); // Store Cloudinary URL
                 } catch (error) {
