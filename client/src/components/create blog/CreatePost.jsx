@@ -94,7 +94,7 @@ function CreatePost() {
 
                 try {
                     // ********************************
-                    const res = await axios.post(`https://thinksync-think-write-sync.onrender.com//file/upload`, formData);
+                    const res = await axios.post(`https://thinksync-think-write-sync.onrender.com/file/upload`, formData);
                     setPost((prev) => ({ ...prev, blogImage: res.data.url }));
                 } catch (error) {
                     console.error('Error uploading image:', error);
