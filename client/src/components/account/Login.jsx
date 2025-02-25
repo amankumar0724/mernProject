@@ -12,6 +12,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { ErrorDialog } from '../../services/common-services.js';
 
 // Styling Components
 const Component = styled(Box)`
@@ -68,10 +69,10 @@ const Image = styled('img')({
 });
 
 const Loader = styled(Box)`
-    display:flex;
-    justify-content:center;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    min-height : 100vh;
+    min-height: 100vh;
 `;
 
 // Initial Values
@@ -97,6 +98,7 @@ const Login = ({ setIsUserAuthenticated }) => {
     const [login, setLogin] = useState(loginInitialValues);
     const [showPassword, setShowPassword] = useState(false);
     const { setAccount } = useContext(DataContext);
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -109,6 +111,13 @@ const Login = ({ setIsUserAuthenticated }) => {
     };
 
     const signupUser = async () => {
+        // Regex: minimum 8 characters, one uppercase, one lowercase, one digit, and one special character
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/;
+        if (!passwordRegex.test(signup.password)) {
+            console.log('passwordcheck');
+            setErrorDialogOpen(true);
+            return;
+        }
         setLoading(true);
         try {
             const response = await API.userSignup(signup);
@@ -145,16 +154,20 @@ const Login = ({ setIsUserAuthenticated }) => {
                 });
                 setIsUserAuthenticated(true);
                 navigate('/');
-            } 
+            } else {
+                setError(response.message || 'Something went wrong !!!');
+            }
         } catch (error) {
-            console.log(error.code)
+            console.log(error.code);
             setError('Something went wrong');
         }
         setLoading(false);
     };
 
+    // Clear error when toggling between login and signup modes
     const toggleSignup = () => {
-        account === 'login' ? toggleAccount('signup') : toggleAccount('login');
+        setError('');
+        toggleAccount(account === 'login' ? 'signup' : 'login');
     };
 
     return (
@@ -264,8 +277,8 @@ const Login = ({ setIsUserAuthenticated }) => {
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
-                                                <IconButton onClick={togglePasswordVisibility} edge="end" >
-                                                    {showPassword ? <VisibilityOff fontSize="small" sx={{ color: 'gray' }} /> : <Visibility fontSize="small"  sx={{ color: 'gray' }} />}
+                                                <IconButton onClick={togglePasswordVisibility} edge="end">
+                                                    {showPassword ? <VisibilityOff fontSize="small" sx={{ color: 'gray' }} /> : <Visibility fontSize="small" sx={{ color: 'gray' }} />}
                                                 </IconButton>
                                             </InputAdornment>
                                         ),
@@ -282,6 +295,11 @@ const Login = ({ setIsUserAuthenticated }) => {
                             </Wrapper>
                         )}
                     </Box>
+                    <ErrorDialog 
+                        open={errorDialogOpen} 
+                        onClose={() => setErrorDialogOpen(false)} 
+                        message="Password should be of at least 8 characters including at least an uppercase, a lowercase, a special character and a number"
+                    />
                 </Component>
             )}
         </>
