@@ -147,12 +147,8 @@ const Login = ({ setIsUserAuthenticated }) => {
                 navigate('/');
             } 
         } catch (error) {
-            console.log(error)
-            if (error.code === 503) {
-                setError('Something went wrong, check your internet connection');
-            } else {
-                setError('Wrong credentials!!!');
-            }
+            console.log(error.code)
+            setError('Something went wrong');
         }
         setLoading(false);
     };
