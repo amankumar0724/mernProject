@@ -17,6 +17,7 @@ const corsOptions = {
     origin: "https://thinksync-think-write-sync.onrender.com/",
     credentials: true,
 }
+
 app.use(cors(corsOptions));
 app.use(bodyParser.json({extended:true}));
 app.use(bodyParser.urlencoded({extended:true}));
