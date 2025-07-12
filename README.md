@@ -56,11 +56,11 @@ All RESTful API endpoints are thoroughly tested using **Postman**. The architect
 
 ## 📂 Folder Structure
 
-/client => React frontend with routing and Material UI components
-/server => Node.js backend with Express routes and MongoDB models
-/models => Mongoose schemas for Users, Blogs, Comments
-/routes => Route files for blogs, auth, comments
-/utils => JWT and middleware utilities
+- /client => React frontend with routing and Material UI components
+- /server => Node.js backend with Express routes and MongoDB models
+- /models => Mongoose schemas for Users, Blogs, Comments
+- /routes => Route files for blogs, auth, comments
+- /utils => JWT and middleware utilities
 
 
 ---
